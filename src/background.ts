@@ -1,6 +1,6 @@
 import browser from "webextension-polyfill";
 
-import { actionFetch, actionUrlMap } from "@/utils/api";
+import { actionFetch, apiMap } from "@/utils/api";
 
 browser.runtime.onInstalled.addListener((details) => {
   console.log("Extension installed:", details);
@@ -8,7 +8,7 @@ browser.runtime.onInstalled.addListener((details) => {
 
 browser.runtime.onMessage.addListener((request) => {
   // @ts-ignore
-  const url = actionUrlMap[request.action];
+  const url = apiMap[request.action];
   if (url) {
     return actionFetch(url);
   }

@@ -85,9 +85,12 @@ module.exports = {
     "react/prop-types": "off", // https://github.com/shadcn-ui/ui/issues/120
 
     // console.warn, console.error만 허용
-    "no-console": ["error", {
-      "allow": ["warn", "error"]
-    }],
+    "no-console": [
+      "error",
+      {
+        allow: ["warn", "error"],
+      },
+    ],
 
     // Tailwind 사용시 커스텀 클래스명 사용 체크
     "tailwindcss/no-custom-classname": "off",

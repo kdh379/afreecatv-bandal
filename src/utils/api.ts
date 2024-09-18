@@ -1,13 +1,13 @@
 import Browser from "webextension-polyfill";
 
-export interface ActionData {
-  fetchFavorites: FavoriteResponse;
+export interface ApiDict {
+  favorites: FavoriteResponse;
 }
 
-export type ActionKey = keyof ActionData;
+export type ApiKeys = keyof ApiDict;
 
-export const actionUrlMap: Record<keyof ActionData, string> = {
-  fetchFavorites: "https://myapi.afreecatv.com/api/favorite",
+export const apiMap: Record<keyof ApiDict, string> = {
+  favorites: "https://myapi.afreecatv.com/api/favorite",
 };
 
 export async function actionFetch(url: string, options: RequestInit = {}) {
@@ -30,9 +30,7 @@ export function isErrorResponse(response: any): response is ErrorResponse {
   return "code" in response && "message" in response;
 }
 
-export async function api<T extends ActionKey>(
-  action: T,
-): Promise<ActionData[T]> {
+export async function api<T extends ApiKeys>(action: T): Promise<ApiDict[T]> {
   try {
     const response = await Browser.runtime.sendMessage({ action });
 

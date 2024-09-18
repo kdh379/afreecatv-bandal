@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { ActionData, ActionKey, api, isErrorResponse } from "@/utils/api";
+import { ApiDict, ApiKeys, api, isErrorResponse } from "@/utils/api";
 
-export const useFetch = (key: ActionKey) => {
-  const [data, setData] = useState<ActionData[ActionKey]>();
+export const useFetch = (key: ApiKeys) => {
+  const [data, setData] = useState<ApiDict[ApiKeys]>();
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<string | null>(null);
