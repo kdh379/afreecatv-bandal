@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "AfreecaTV Bandal",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.afreecatv.com/*"],
+      "js": ["src/index.ts"]
+    }
+  ],
+  "host_permission": ["https://myapi.afreecatv.com/*"],
+  "background": {
+    "{{chrome}}.service_worker": "src/background.ts"
+  },
+  "icons": {
+    "16": "icon/16.png",
+    "32": "icon/32.png",
+    "48": "icon/48.png",
+    "96": "icon/96.png",
+    "128": "icon/128.png"
+  }
+}
