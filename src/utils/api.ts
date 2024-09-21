@@ -33,6 +33,7 @@ export function isErrorResponse(response: any): response is ErrorResponse {
 export async function api<T extends ApiKeys>(action: T): Promise<ApiDict[T]> {
   try {
     const response = await Browser.runtime.sendMessage({ action });
+    console.log(response);
 
     if (response.success) return response.data;
     else {

@@ -1,23 +1,52 @@
-import { renderComponent } from "@/utils/react-roots";
 import Sidebar from "@/components/sidebar";
-import "@/styles/global.css";
+import { addCSSFileToHead } from "@/styles/init";
+import { renderComponent } from "@/utils/react-roots";
 
-function addCSSFileToHead() {
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.type = "text/css";
-  link.href = "./style.css";
-  document.head.appendChild(link);
+const ELEMENT_IDS = {
+  WEBPLAYER_CONTENTS: "webplayer_contents",
+  SIDEBAR: "sidebar",
+  SERVICE_LNB: "serviceLnb",
+};
 
-  const font = document.createElement("link");
-  font.rel = "stylesheet";
-  font.type = "text/css";
-  font.crossOrigin = "";
-  font.href =
-    "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css";
-  document.head.appendChild(font);
-}
+const PLAYER_URL = "play.afreecatv.com";
 
 addCSSFileToHead();
 
-renderComponent("serviceLnb", Sidebar);
+function createSidebarElement() {
+  const sidebarDiv = document.createElement("div");
+  sidebarDiv.id = ELEMENT_IDS.SIDEBAR;
+  sidebarDiv.className =
+    "absolute top-0 left-0 h-[calc(100vh-var(--gnb-height))]";
+  return sidebarDiv;
+}
+
+function getTargetElement(isPlayerPage: boolean) {
+  const elementId = isPlayerPage
+    ? ELEMENT_IDS.WEBPLAYER_CONTENTS
+    : ELEMENT_IDS.SERVICE_LNB;
+  const element = document.getElementById(elementId);
+
+  if (!element) {
+    console.error(`'${elementId}' ID를 가진 요소를 찾을 수 없습니다.`);
+    return null;
+  }
+
+  return element;
+}
+
+function renderSidebar() {
+  const isPlayerPage = window.location.href.includes(PLAYER_URL);
+  const targetElement = getTargetElement(isPlayerPage);
+
+  if (!targetElement) return;
+
+  if (isPlayerPage) {
+    const sidebarElement = createSidebarElement();
+    targetElement.appendChild(sidebarElement);
+    renderComponent(ELEMENT_IDS.SIDEBAR, Sidebar);
+  } else {
+    renderComponent(ELEMENT_IDS.SERVICE_LNB, Sidebar);
+  }
+}
+
+renderSidebar();

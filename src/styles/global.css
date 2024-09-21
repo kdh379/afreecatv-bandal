@@ -42,7 +42,8 @@ html[lang="ko"] * {
     font-size: 12px;
   }
   
-  :root[dark="true"] {
+  :root[dark="true"],
+  body.thema_dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
