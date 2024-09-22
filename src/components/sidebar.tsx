@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 
 import {
   Tooltip,
@@ -9,7 +10,7 @@ import {
 import { useFetch } from "@/hooks/useFetch";
 import { splitAndSortFavorites } from "@/utils/favorites";
 import { Icons } from "@/components/ui/icons";
-import useHasSmode from "@/hooks/useHasSmode";
+import { useSidebarState } from "@/hooks/useSidebarState";
 
 const BjImage = ({ userId }: { userId: FavoriteItem["user_id"] }) => (
   <img
@@ -30,8 +31,22 @@ const BroadPopover = ({ broadInfo }: { broadInfo: BroadInfo }) => (
       className="rounded-md"
       alt={`${broadInfo.broad_title} thumbnail`}
     />
-    <p className="max-w-[200px] whitespace-pre-wrap text-xl">
+    <h3 className="text-lg font-bold">
+      {broadInfo.user_nick}
+      <span
+        className={clsx(
+          "before:inline-block before:size-2 font-normal before:mr-2 before:rounded-full before:bg-destructive",
+          "ml-4 text-base text-muted-foreground",
+        )}
+      >
+        {broadInfo.total_view_cnt}명
+      </span>
+    </h3>
+    <p className="max-w-[200px] whitespace-pre-wrap text-xl font-medium">
       {broadInfo.broad_title}
+    </p>
+    <p className="text-lg font-medium text-muted-foreground">
+      {broadInfo.category_tags.join(" / ")}
     </p>
   </a>
 );
@@ -45,14 +60,16 @@ const BjListItem = ({
   url: string;
   isOffline?: boolean;
 }) => (
-  <li>
-    <a
-      href={url}
-      className={`flex w-full items-center gap-x-2 rounded-md p-2 text-left transition-colors hover:bg-muted hover:no-underline ${isOffline ? "grayscale" : ""}`}
-    >
-      {children}
-    </a>
-  </li>
+  <a
+    href={url}
+    className={clsx(
+      "flex w-full items-center gap-x-2 rounded-md p-2 text-left transition-colors",
+      "hover:bg-muted hover:no-underline",
+      isOffline ? "grayscale" : "",
+    )}
+  >
+    {children}
+  </a>
 );
 
 const LiveItem = React.memo(({ item }: { item: FavoriteItem }) => (
@@ -69,7 +86,12 @@ const LiveItem = React.memo(({ item }: { item: FavoriteItem }) => (
             {item.broad_info[0].category_tags.join(" / ")}
           </p>
         </div>
-        <div className="ml-auto flex items-center gap-x-2 text-lg before:inline-block before:size-2 before:rounded-full before:bg-destructive">
+        <div
+          className={clsx(
+            "before:inline-block before:size-2 before:rounded-full before:bg-destructive",
+            "ml-auto flex items-center gap-x-2 text-lg",
+          )}
+        >
           <span aria-label="시청자 수">
             {item.broad_info[0].total_view_cnt}
           </span>
@@ -98,31 +120,56 @@ OfflineItem.displayName = "OfflineItem";
 
 function Sidebar() {
   const { data, isError, isLoading, refetch } = useFetch("favorites");
-  const isSmode = useHasSmode();
+  const { isSmode, isExpanded, toggleSidebar } = useSidebarState();
   const [live, offline] = data ? splitAndSortFavorites(data.data) : [[], []];
 
   return (
     <aside
       aria-label="BJ 목록"
-      className={`
-        scrollbar-thin scrollbar-rounded-full reset fixed z-10 h-[calc(100%-var(--gnb-height))] w-[226px] overflow-auto px-2 pb-4 text-foreground
-        ${isSmode ? "translate-x-[-228px]" : ""}
-        `}
+      className={clsx(
+        "scrollbar-thin scrollbar-rounded-full reset transition-all",
+        "fixed z-10 h-[calc(100vh-var(--gnb-height))] w-sidebar overflow-auto px-2 pb-4 text-foreground",
+        isExpanded ? "w-sidebar" : "w-sidebar-collapsed",
+        isSmode ? "-translate-x-sidebar" : "",
+      )}
     >
-      <h2 className="mb-2 flex items-center text-lg font-bold">
-        즐겨찾기
-        <button
-          aria-label="새로고침"
-          className="ml-auto size-5"
-          onClick={refetch}
+      <div className="mb-2 flex items-center justify-between text-lg font-bold">
+        {isExpanded && <h2>즐겨찾기</h2>}
+        <div
+          role="group"
+          className={clsx(
+            "flex gap-4 [&>button]:size-5",
+            !isExpanded && "flex-col mx-auto [&>button]:size-6",
+          )}
         >
-          <Icons.refresh />
-        </button>
-      </h2>
-      {isLoading && <p>로딩 중...</p>}
-      {isError && <p>로그인 정보를 확인해주세요.</p>}
-      {(!data || data.data.length === 0) && <p>즐겨찾기한 BJ가 없습니다.</p>}
-      <ul className="space-y-2">
+          <button
+            aria-label={isExpanded ? "사이드바 축소" : "사이드바 확장"}
+            onClick={toggleSidebar}
+          >
+            {isExpanded ? (
+              <Icons.arrowLeftToLine />
+            ) : (
+              <Icons.arrowRightToLine />
+            )}
+          </button>
+          <button aria-label="새로고침" onClick={refetch}>
+            <Icons.refresh />
+          </button>
+        </div>
+      </div>
+      {isLoading ? (
+        <p>로딩 중...</p>
+      ) : isError ? (
+        <p>로그인 정보를 확인해주세요.</p>
+      ) : !data || data.data.length === 0 ? (
+        <p>즐겨찾기한 BJ가 없습니다.</p>
+      ) : null}
+      <div
+        className={clsx(
+          "space-y-2 overflow-hidden",
+          !isExpanded && "[&_a]:!size-14",
+        )}
+      >
         <TooltipProvider>
           {live.map((item) => (
             <LiveItem key={item.user_id} item={item} />
@@ -131,7 +178,7 @@ function Sidebar() {
         {offline.map((item) => (
           <OfflineItem key={item.user_id} item={item} />
         ))}
-      </ul>
+      </div>
     </aside>
   );
 }

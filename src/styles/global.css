@@ -11,6 +11,8 @@ html[lang="ko"] * {
 @layer base {
   :root {
     --gnb-height: 72px;
+    --sidebar-width: 226px;
+    --sidebar-collapsed-width: 60px;
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -119,4 +121,10 @@ html[lang="ko"] * {
   .scrollbar-thin::-webkit-scrollbar-button {
     display: none;
   }
+
+}
+
+/* CSS Override */
+.emoticon {
+  display: inline-block;
 }
