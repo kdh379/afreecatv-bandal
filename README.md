@@ -19,11 +19,12 @@
 ### 적용 후
 
 **라이트모드**
-마우스 올릴 시 방송 썸네일이 표시됩니다.
-![white-hover](https://github.com/user-attachments/assets/6601b7ef-02e4-4d95-91de-8e4e864ba979)
+![player-white](https://github.com/user-attachments/assets/a8da2c1a-e789-4468-92bc-decae0be3ada)
+
 
 **다크모드**
-![black](https://github.com/user-attachments/assets/952c39a4-5217-4f38-97fc-6939ef4cdfdc)
+![player-black](https://github.com/user-attachments/assets/599813fc-668a-4b38-847a-9e2b03f0f83a)
 
-**플레이어**
-![player-white](https://github.com/user-attachments/assets/6a017c34-35f4-4a2b-b4ac-7cb896df12dc)
+
+**사이드바 접기**
+![player-white-hover](https://github.com/user-attachments/assets/0d43c925-6258-429c-b02e-646ff5b46ba7)
